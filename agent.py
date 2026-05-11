@@ -1,4 +1,5 @@
 import requests
+import tkinter as tk
 
 # prompts for each AI that does everything
 PLANNER_PROMPT = """
@@ -110,38 +111,96 @@ def run_task(task, max_rounds):
 
 
 
+# create window
+root = tk.Tk()
+root.title("AI Chat")
+root.geometry("600x650")
+root.configure(bg="#111111")
 
-print("""
-### AI Dev Agent ###
-please input your prompt
-
-""")
-
-prompts = input()
-
-rounds_raw = ask_ollama(
-    ROUNDS_PROMPT + "\nTheir prompt:\n" + prompts,
-    "llama3"
+# chat display
+chat_display = tk.Text(
+    root,
+    bg="#1e1e1e",
+    fg="white",
+    font=("Arial", 12),
+    wrap="word"
 )
 
-digits = ''.join(filter(str.isdigit, rounds_raw))
-rounds = int(digits) if digits  else 2
-rounds = max(2, min(rounds, 4))
+chat_display.pack(padx=10, pady=10, fill="both", expand=True)
 
-print(rounds)
+# input frame
+input_frame = tk.Frame(root, bg="#111111")
+input_frame.pack(fill="x", padx=10, pady=10)
+
+# Textbox
+textbox = tk.Entry(
+    input_frame,
+    font=("Arial", 12)
+)
+
+textbox.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+# send function 
+def send_message():
+    user_text = textbox.get()
+
+    if user_text == "":
+        return
+
+    # Show user message
+    chat_display.insert(tk.END, "You: " + user_text + "\n")
+    
+    print("input being processed plase be patient. the AI can take up to 7 min")
+    
+
+    rounds_raw = ask_ollama(
+        ROUNDS_PROMPT + "\nTheir prompt:\n" + user_text,
+        "llama3"
+    )   
+
+    digits = ''.join(filter(str.isdigit, rounds_raw))
+    rounds = int(digits) if digits  else 2
+    rounds = max(2, min(rounds, 4))
+
+    print(rounds)
+
+    
+    code = run_task(user_text, int(rounds))
+
+    formated = f"""
+    FINAL CODE:
+    {code["Code"]}
+
+    REVIEW:
+    {code["Review"]}
+
+    TESTS:
+    {code["Tests"]}
+    """
+
+    
+    ai_response = formated
+
+    # Show AI message
+    chat_display.insert(tk.END, ai_response + "\n\n")
+
+    # Auto scroll
+    chat_display.see(tk.END)
+
+    # Clear textbox
+    textbox.delete(0, tk.END)
 
 
-code = run_task(prompts, int(rounds))
+# Send button
+send_button = tk.Button(
+    input_frame,
+    text="Send",
+    command=send_message,
+    bg="#2563eb",
+    fg="white"
+)
 
-formatted = f"""
-FINAL CODE:
-{code["Code"]}
+send_button.pack(side="right")
 
-REVIEW:
-{code["Review"]}
-
-TESTS:
-{code["Tests"]}
-"""
-
-print(formatted)
+# Run app
+root.mainloop()

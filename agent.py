@@ -144,13 +144,38 @@ textbox.pack(side="left", fill="x", expand=True, padx=(0, 10))
 def send_message():
     user_text = textbox.get()
 
+    warning = tk.Toplevel(root)
+    warning.title("Processing")
+    warning.geometry("400x220")
+    warning.configure(bg="#111111")
+    
+    label = tk.Label(
+        warning,
+        text="Your prompt is being processed.\nThe AI may take several minutes.",
+        bg="#111111",
+        fg="white",
+        font=("Arial", 11)
+    )
+
+    close_button = tk.Button(
+        warning,
+        text="I understand",
+        command=warning.destroy,
+        bg="red",
+        fg="white"
+    )
+
+    label.pack(expand=True, pady=20)
+    close_button.pack(pady=10)    
+
+    warning.update()
+        
+
     if user_text == "":
         return
 
     # Show user message
     chat_display.insert(tk.END, "You: " + user_text + "\n")
-    
-    print("input being processed plase be patient. the AI can take up to 7 min")
     
 
     rounds_raw = ask_ollama(
@@ -189,6 +214,8 @@ def send_message():
 
     # Clear textbox
     textbox.delete(0, tk.END)
+
+    warning.destroy()
 
 
 # Send button

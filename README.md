@@ -4,9 +4,9 @@ although it is slow, it trades this for accuracy(in a sense)
 
 it has agents for every job (coder tester planer ... ) it loops
 thru steps a set amount of time (done by another agent) and validates that the 
-code i correct
+code is correct
 
-to make it faster , make the amount of times the ai loops a set amount of times.
+to make it faster , make the amount of times the ai loops a set amount of times(smaller = faster).
 limit the steps the ai takes and how many ai there are 
 
 for this project you need ollama running on port 11434 and llama3 has to be installed

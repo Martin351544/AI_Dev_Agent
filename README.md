@@ -11,14 +11,11 @@ limit the steps the ai takes and how many ai there are
 
 for this project you need ollama running on port 11434 and llama3 has to be installed
 
-
 to install ollama go to the ollama website and use the download code an the cmd line
 
-the run ollama (if already not runnimg)
+to run ollama (if already not running):
 
 ollama serve
-
-
 
 to install llama3 :
 
